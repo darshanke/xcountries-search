@@ -172,15 +172,15 @@ import { v4 as uniqueid } from "uuid";
 function App() {
   const [countries, setCountries] = useState([]); // Combined state for all countries
   const [searchTerm, setSearchTerm] = useState("");
-  const timeoutRef = useRef(null);
+  // const timeoutRef = useRef(null);
   const [originalData, setOriginalData] = useState([]);
 
   const handleSearch = (term, debounce = 300) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+    // if (timeoutRef.current) {
+    //   clearTimeout(timeoutRef.current);
+    // }
 
-    timeoutRef.current = setTimeout(() => {
+    // timeoutRef.current = setTimeout(() => {
       if (term === "") {
         setCountries(originalData); 
       } else {
@@ -189,7 +189,7 @@ function App() {
         );
         setCountries(filteredCountries);
       }
-    }, debounce);
+    // }, debounce);
   };
 
   const fetchData = async () => {
@@ -210,8 +210,8 @@ function App() {
   useEffect(() => {
     handleSearch(searchTerm);
 
-    return () => clearTimeout(timeoutRef.current); // Cleanup timeout on unmount
-  }, [searchTerm,countries]);
+    // return () => clearTimeout(timeoutRef.current); 
+  }, [searchTerm]);
 
   return (
     <div className="App">
