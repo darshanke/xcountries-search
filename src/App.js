@@ -231,7 +231,7 @@ function App() {
                 alt={country.name.official}
                 style={{ objectFit: "cover", height: 100, width: 100, padding: "1rem" }}
               />
-              <h3>{country.name.common}</h3>
+              <h2>{country.name.common}</h2>
             </div>
           ))
         ) : (
