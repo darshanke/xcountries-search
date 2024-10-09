@@ -114,6 +114,7 @@ function App() {
   const performAPiIntitialrendering = async () => {
     try {
       const res = await axios.get(`https://restcountries.com/v3.1/all`);
+      console.log("API Response:", res.data);
       setoriginaldata(res.data);
       setfilterdata(res.data); // Set initial filterdata to all countries
     } catch (e) {
@@ -130,7 +131,7 @@ function App() {
     return () => {
       clearTimeout(timeoutRef.current); // Cleanup timeout on unmount
     };
-  }, [search,filterdata]);
+  }, [search,originaldata]);
 
   return (
     <div className="App">
