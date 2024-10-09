@@ -182,9 +182,9 @@ function App() {
 
     timeoutRef.current = setTimeout(() => {
       if (term === "") {
-        setCountries(originalData); // Use originalData instead of prevCountries
+        setCountries(originalData); 
       } else {
-        const filteredCountries = countries.filter((country) =>
+        const filteredCountries = originalData.filter((country) =>
           country.name.common.toLowerCase().includes(term.toLowerCase())
         );
         setCountries(filteredCountries);
@@ -227,7 +227,7 @@ function App() {
           countries.map((country) => (
             <div className="countryCard" key={uniqueid()}>
               <img
-                src={country.flags.png}
+                src={country.flags.svg}
                 alt={country.name.official}
                 style={{ objectFit: "cover", height: 100, width: 100, padding: "1rem" }}
               />
