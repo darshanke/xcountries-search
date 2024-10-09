@@ -161,6 +161,9 @@ import logo from "./logo.svg";
 // }
 
 // export default App;
+
+
+
 import "./App.css";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
@@ -170,15 +173,16 @@ function App() {
   const [countries, setCountries] = useState([]); // Combined state for all countries
   const [searchTerm, setSearchTerm] = useState("");
   const timeoutRef = useRef(null);
-  const [original, setoriginalcounties] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
+
   const handleSearch = (term, debounce = 300) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-  
+
     timeoutRef.current = setTimeout(() => {
       if (term === "") {
-        setCountries(original); // Use originalData instead of prevCountries
+        setCountries(originalData); // Use originalData instead of prevCountries
       } else {
         const filteredCountries = countries.filter((country) =>
           country.name.common.toLowerCase().includes(term.toLowerCase())
@@ -191,8 +195,9 @@ function App() {
   const fetchData = async () => {
     try {
       const response = await axios.get("https://restcountries.com/v3.1/all");
+      console.log("Fetched data:", response.data); // Log fetched data for debugging
       setCountries(response.data);
-      setoriginalcounties(response.data);
+      setOriginalData(response.data);
     } catch (error) {
       console.error("Error while fetching data:", error.message);
     }
@@ -206,7 +211,7 @@ function App() {
     handleSearch(searchTerm);
 
     return () => clearTimeout(timeoutRef.current); // Cleanup timeout on unmount
-  }, [searchTerm]);
+  }, [searchTerm,countries]);
 
   return (
     <div className="App">
