@@ -149,7 +149,7 @@ function App() {
                 <img
                   src={item.flags.png}
                   alt={item.name.official}
-                  style={{ objectFit: "cover", height: "150px" }}
+                  style={{ objectFit: "cover", height: "100px", width: "100px" , padding: "1rem "}}
                 />
                 <h3>{item.name.common}</h3>
               </div>
