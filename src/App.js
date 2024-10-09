@@ -83,55 +83,130 @@
 
 // export default App;
 import logo from "./logo.svg";
+// import "./App.css";
+// import { useEffect, useState, useRef } from "react";
+// import axios from "axios";
+// import { v4 as uniqueid } from "uuid";
+
+// function App() {
+//   const [originaldata, setoriginaldata] = useState([]);
+//   const [filterdata, setfilterdata] = useState([]);
+//   const [search, setsearch] = useState("");
+//   const timeoutRef = useRef(null);
+
+//   const handlesearch = (term, debounce) => {
+//     if (timeoutRef.current) {
+//       clearTimeout(timeoutRef.current);
+//     }
+
+//     timeoutRef.current = setTimeout(() => {
+//       if (term === "") {
+//         setfilterdata(originaldata); // Show all countries when search is empty
+//       } else {
+//         const handelelist = originaldata.filter((item) =>
+//           item.name.common.toLowerCase().includes(term.toLowerCase())
+//         );
+//         setfilterdata(handelelist);
+//       }
+//     }, debounce);
+//   };
+
+//   const performAPiIntitialrendering = async () => {
+//     try {
+//       const res = await axios.get(`https://restcountries.com/v3.1/all`);
+//       console.log("API Response:", res.data);
+//       setoriginaldata(res.data);
+//       setfilterdata(res.data); // Set initial filterdata to all countries
+//     } catch (e) {
+//       console.error("Error while fetching data", e.message);
+//     }
+//   };
+
+//   useEffect(() => {
+//     performAPiIntitialrendering();
+//   }, []);
+
+//   useEffect(() => {
+//     handlesearch(search, 300);
+//     return () => {
+//       clearTimeout(timeoutRef.current); // Cleanup timeout on unmount
+//     };
+//   }, [search,originaldata]);
+
+//   return (
+//     <div className="App">
+//       <input
+//         placeholder="Search for countries"
+//         type="text"
+//         className="textbox"
+//         value={search}
+//         onChange={(e) => setsearch(e.target.value)}
+//       />
+//       <div className="countries-list">
+//         {filterdata.length > 0
+//           ? filterdata.map((item) => (
+//               <div className="countryCard" key={uniqueid()}>
+//                 <img
+//                   src={item.flags.png}
+//                   alt={item.name.official}
+//                   style={{ objectFit: "cover", height: "100px", width: "100px" , padding: "1rem "}}
+//                 />
+//                 <h3>{item.name.common}</h3>
+//               </div>
+//             ))
+//           : null}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
 import "./App.css";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { v4 as uniqueid } from "uuid";
 
 function App() {
-  const [originaldata, setoriginaldata] = useState([]);
-  const [filterdata, setfilterdata] = useState([]);
-  const [search, setsearch] = useState("");
+  const [countries, setCountries] = useState([]); // Combined state for all countries
+  const [searchTerm, setSearchTerm] = useState("");
   const timeoutRef = useRef(null);
-
-  const handlesearch = (term, debounce) => {
+  const [original, setoriginalcounties] = useState([]);
+  const handleSearch = (term, debounce = 300) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-
+  
     timeoutRef.current = setTimeout(() => {
       if (term === "") {
-        setfilterdata(originaldata); // Show all countries when search is empty
+        setCountries(original); // Use originalData instead of prevCountries
       } else {
-        const handelelist = originaldata.filter((item) =>
-          item.name.common.toLowerCase().includes(term.toLowerCase())
+        const filteredCountries = countries.filter((country) =>
+          country.name.common.toLowerCase().includes(term.toLowerCase())
         );
-        setfilterdata(handelelist);
+        setCountries(filteredCountries);
       }
     }, debounce);
   };
 
-  const performAPiIntitialrendering = async () => {
+  const fetchData = async () => {
     try {
-      const res = await axios.get(`https://restcountries.com/v3.1/all`);
-      console.log("API Response:", res.data);
-      setoriginaldata(res.data);
-      setfilterdata(res.data); // Set initial filterdata to all countries
-    } catch (e) {
-      console.error("Error while fetching data", e.message);
+      const response = await axios.get("https://restcountries.com/v3.1/all");
+      setCountries(response.data);
+      setoriginalcounties(response.data);
+    } catch (error) {
+      console.error("Error while fetching data:", error.message);
     }
   };
 
   useEffect(() => {
-    performAPiIntitialrendering();
+    fetchData();
   }, []);
 
   useEffect(() => {
-    handlesearch(search, 300);
-    return () => {
-      clearTimeout(timeoutRef.current); // Cleanup timeout on unmount
-    };
-  }, [search,originaldata]);
+    handleSearch(searchTerm);
+
+    return () => clearTimeout(timeoutRef.current); // Cleanup timeout on unmount
+  }, [searchTerm]);
 
   return (
     <div className="App">
@@ -139,22 +214,24 @@ function App() {
         placeholder="Search for countries"
         type="text"
         className="textbox"
-        value={search}
-        onChange={(e) => setsearch(e.target.value)}
+        value={searchTerm}
+        onChange={(event) => setSearchTerm(event.target.value)}
       />
       <div className="countries-list">
-        {filterdata.length > 0
-          ? filterdata.map((item) => (
-              <div className="countryCard" key={uniqueid()}>
-                <img
-                  src={item.flags.png}
-                  alt={item.name.official}
-                  style={{ objectFit: "cover", height: "100px", width: "100px" , padding: "1rem "}}
-                />
-                <h3>{item.name.common}</h3>
-              </div>
-            ))
-          : null}
+        {countries.length > 0 ? (
+          countries.map((country) => (
+            <div className="countryCard" key={uniqueid()}>
+              <img
+                src={country.flags.png}
+                alt={country.name.official}
+                style={{ objectFit: "cover", height: 100, width: 100, padding: "1rem" }}
+              />
+              <h3>{country.name.common}</h3>
+            </div>
+          ))
+        ) : (
+         null
+        )}
       </div>
     </div>
   );
